@@ -1,9 +1,12 @@
+
+# -*- coding: utf-8 -*-
 import pytesseract
 import sys
 from PIL import Image
 import re
 import os
 import csv
+import string
 
 #read file from the arguments
 img = sys.argv[1]
@@ -22,15 +25,21 @@ textFile.close()
 tempFile = open('output.txt','r')
 temp = tempFile.read()
 tempFile.close()
-toSearch = ''.join(temp.split())
+tempStr = ''.join(temp.split())
+toSearch = string.replace(tempStr,"’",",")
 regExpression = "reg.no.[0-9].[0-9]{3}.[0-9]{3}"
-print toSearch.lower()
-tempNum = re.search(regExpression,toSearch.lower(),re.DOTALL).group()
-regNum = re.search("[0-9].[0-9]{3}.[0-9]{3}",tempNum.lower(),re.DOTALL).group()
+print toSearch
+try:
+    tempNum = re.search(regExpression,toSearch.lower()).group()
+    regNum = re.search("[0-9].[0-9]{3}.[0-9]{3}",tempNum.lower()).group()
+    print tempNum
+    print regNum
+except Exception:
+    pass
 
-print tempNum
-print regNum
 # remove all extra stuff you created...close all files.....etc.
 os.remove('output.txt')
 os.remove("temp.tif")
 os.remove("temp.pbm")
+
+print "DONE"
